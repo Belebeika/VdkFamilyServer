@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Пользователи</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div th:replace="admin/fragments/header :: header"></div>
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Пользователи</h1>
+        <a href="/admin/users/new" class="btn btn-success">Добавить пользователя</a>
+    </div>
+
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+
+    <!-- 🔍 Форма поиска -->
+    <form class="d-flex mb-3" th:action="@{/admin/users}" method="get">
+        <input class="form-control me-2" type="text" name="phone"
+               list="phoneSuggestions"
+               placeholder="Поиск по номеру телефона"
+               th:value="${search}" />
+        <button class="btn btn-outline-primary" type="submit">Поиск</button>
+        <a class="btn btn-outline-secondary ms-2" th:href="@{/admin/users}">Сбросить</a>
+        <datalist id="phoneSuggestions">
+            <option th:each="u : ${users}" th:value="${u.phoneNumber}"></option>
+        </datalist>
+    </form>
+
+
+    <!-- 📄 Таблица пользователей -->
+    <table class="table table-hover table-bordered align-middle">
+        <thead class="table-primary">
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Телефон</th>
+            <th>Роль</th>
+            <th>Статус</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.id}"></td>
+            <td th:text="${user.firstName}">-</td>
+            <td th:text="${user.lastName}">-</td>
+            <td th:text="${user.phoneNumber}">-</td>
+            <td th:text="${user.role}">-</td>
+            <td>
+                <span th:text="${user.active} ? 'Активен' : 'Заблокирован'"
+                      th:classappend="${user.active} ? 'text-success' : 'text-danger'"></span>
+            </td>
+            <td>
+                <a th:href="@{/admin/users/{id}(id=${user.id})}" class="btn btn-sm btn-primary">Редактировать</a>
+                <form th:action="@{/admin/users/delete/{id}(id=${user.id})}" method="post" th:object="${user}">
+                    <input type="hidden" name="_method" value="delete" />
+                    <button type="submit" class="btn btn-sm btn-danger"
+                            onclick="return confirm('Вы уверены, что хотите удалить пользователя?');">
+                        Удалить
+                    </button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- 📎 Пагинация -->
+    <nav th:if="${totalPages > 1}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/users(page=${currentPage - 1})}">Назад</a>
+            </li>
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/admin/users(page=${i})}" th:text="${i + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/admin/users(page=${currentPage + 1})}">Вперёд</a>
+            </li>
+        </ul>
+    </nav>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

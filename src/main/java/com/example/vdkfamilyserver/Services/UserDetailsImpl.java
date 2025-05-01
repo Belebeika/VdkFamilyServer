@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -21,6 +22,7 @@ public class UserDetailsImpl implements UserDetails {
     private String phoneNumber;
     private String password;
     private boolean active;
+    private String role;
 
     @Override
     public String getUsername() {
@@ -32,11 +34,12 @@ public class UserDetailsImpl implements UserDetails {
         this.phoneNumber = user.getPhoneNumber();
         this.password = user.getPassword();
         this.active = user.isActive();
+        this.role = user.getRole().name(); // Сохраняем роль
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
+        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role)); // например ROLE_ADMIN
     }
 
     // Остальные методы интерфейса UserDetails

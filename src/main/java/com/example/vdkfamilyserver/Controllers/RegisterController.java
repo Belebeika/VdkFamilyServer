@@ -15,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-
 @RestController
 @RequestMapping("/api/register")
 public class RegisterController {
@@ -77,7 +75,6 @@ public class RegisterController {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setActive(true);
             user.setRole(User.Role.USER);
-            user.setCreatedAt(LocalDateTime.now());
 
             userService.save(user);
             tempUserService.deleteTempUser(user.getPhoneNumber());
