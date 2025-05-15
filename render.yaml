@@ -1,9 +1,14 @@
 services:
   - type: web
     name: vdkfamilyserver
-    env: java
-    buildCommand: "./gradlew build -x test"
-    startCommand: "java -Xmx400m -jar build/libs/app.jar"
+    runtime: docker
+    repo: https://github.com/Belebeika/VdkFamilyServer
+    branch: master
+    buildCommand: ./gradlew build -x test
+    startCommand: java -Xmx400m -jar build/libs/app.jar
     envVars:
       - key: JAVA_VERSION
-        value: 21
+      - key: DB_URL
+      - key: DB_USERNAME
+      - key: DB_PASSWORD
+      - key: SPRING_PROFILES_ACTIVE
