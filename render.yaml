@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: vdkfamilyserver
+    buildCommand: "./gradlew build -x test"
+    envVars:
+      - key: JAVA_VERSION
+        value: 21
