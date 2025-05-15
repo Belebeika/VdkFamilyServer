@@ -19,7 +19,6 @@
     <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
     <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
 
-    <!-- 🔍 Форма поиска -->
     <form class="d-flex mb-3" th:action="@{/admin/users}" method="get">
         <input class="form-control me-2" type="text" name="phone"
                list="phoneSuggestions"
@@ -32,8 +31,6 @@
         </datalist>
     </form>
 
-
-    <!-- 📄 Таблица пользователей -->
     <table class="table table-hover table-bordered align-middle">
         <thead class="table-primary">
         <tr>
@@ -62,7 +59,7 @@
                 <form th:action="@{/admin/users/delete/{id}(id=${user.id})}" method="post" th:object="${user}">
                     <input type="hidden" name="_method" value="delete" />
                     <button type="submit" class="btn btn-sm btn-danger"
-                            onclick="return confirm('Вы уверены, что хотите удалить пользователя?');">
+                            onclick="return confirm('Удалить пользователя?');">
                         Удалить
                     </button>
                 </form>
@@ -71,7 +68,6 @@
         </tbody>
     </table>
 
-    <!-- 📎 Пагинация -->
     <nav th:if="${totalPages > 1}">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">

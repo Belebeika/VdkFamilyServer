@@ -3,7 +3,7 @@ package com.example.vdkfamilyserver.Controllers;
 import com.example.vdkfamilyserver.Models.Child;
 import com.example.vdkfamilyserver.Models.User;
 import com.example.vdkfamilyserver.Services.ChildService;
-import com.example.vdkfamilyserver.annotations.CurrentUser;
+import com.example.vdkfamilyserver.Annotations.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

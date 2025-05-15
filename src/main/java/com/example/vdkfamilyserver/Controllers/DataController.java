@@ -1,87 +1,88 @@
 package com.example.vdkfamilyserver.Controllers;
 
-import com.example.vdkfamilyserver.DTO.DataRequest;
-import com.example.vdkfamilyserver.Models.User;
-import com.example.vdkfamilyserver.Models.UserData;
-import com.example.vdkfamilyserver.Repositories.UserDataRepository;
-import com.example.vdkfamilyserver.Repositories.UserRepository;
-import com.example.vdkfamilyserver.Services.JwtService;
-import com.example.vdkfamilyserver.Services.UserDetailsImpl;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.ErrorResponse;
+import com.example.vdkfamilyserver.DTO.Data.Article.ArticleCategoryDTO;
+import com.example.vdkfamilyserver.DTO.Data.Article.ArticleDTO;
+import com.example.vdkfamilyserver.DTO.Data.BannerDTO;
+import com.example.vdkfamilyserver.DTO.Data.Article.BlockDTO;
+import com.example.vdkfamilyserver.DTO.Data.NewsDTO;
+import com.example.vdkfamilyserver.Models.Article.ArticleCategory;
+import com.example.vdkfamilyserver.Repositories.Article.ArticleCategoryRepository;
+import com.example.vdkfamilyserver.Repositories.Article.ArticleRepository;
+import com.example.vdkfamilyserver.Repositories.BannerRepository;
+import com.example.vdkfamilyserver.Repositories.NewsRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/data")
+@RequiredArgsConstructor
 public class DataController {
 
-    @Autowired
-    private UserDataRepository userDataRepository;
+    private final BannerRepository bannerRepository;
+    private final NewsRepository newsRepository;
+    private final ArticleRepository articleRepository;
+    private final ArticleCategoryRepository articleCategoryRepository;
 
-    @Autowired
-    private UserRepository userRepository; // Добавлено
-
-    @Autowired
-    private JwtService jwtService;
-
-    @PostMapping
-    public ResponseEntity<?> saveData(
-            @RequestHeader("Authorization") String authHeader,
-            @Valid @RequestBody DataRequest request
-    ) {
-        try {
-            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder
-                    .getContext()
-                    .getAuthentication()
-                    .getPrincipal();
-
-            // Получаем сущность User из БД
-            User user = userRepository.findById(userDetails.getId())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-
-            UserData userData = new UserData();
-            userData.setData(request.getData());
-            userData.setUser(user); // Устанавливаем связь
-
-            userDataRepository.save(userData);
-            return ResponseEntity.ok().build();
-
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Invalid token");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Error: " + e.getMessage());
-        }
+    @GetMapping("/banner")
+    public List<BannerDTO> getAdviceImages(HttpServletRequest request) {
+        return bannerRepository.findTop5ByOrderByUploadedAtDesc().stream()
+                .map(b -> new BannerDTO(
+                        b.getId(),
+                        prependServerUrl(request, b.getImage().getImageUrl()),
+                        b.getLinkUrl()
+                ))
+                .toList();
     }
 
-    @GetMapping
-    public ResponseEntity<?> getUserData(@RequestHeader("Authorization") String authHeader) {
-        try {
-            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder
-                    .getContext()
-                    .getAuthentication()
-                    .getPrincipal();
+    @GetMapping("/news")
+    public List<NewsDTO> getNewsImages(HttpServletRequest request) {
+        return newsRepository.findTop4ByOrderByUploadedAtDesc().stream()
+                .map(n -> new NewsDTO(
+                        n.getId(),
+                        prependServerUrl(request, n.getImage().getImageUrl()),
+                        n.getLinkUrl(),
+                        n.getTitle()
+                ))
+                .toList();
+    }
 
-            User user = userRepository.findById(userDetails.getId())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+    @GetMapping("/articles")
+    public List<ArticleDTO> getArticles(HttpServletRequest request) {
+        return articleRepository.findAll().stream()
+                .map(article -> new ArticleDTO(
+                        article.getId(),
+                        article.getTitle(),
+                        article.getCategories().stream().map(ArticleCategory::getName).toList(),
+                        article.getCategories().stream().map(ArticleCategory::getCode).toList(),
+                        article.getBlocks().stream()
+                                .map(b -> new BlockDTO(
+                                        b.getType().name(),
+                                        b.getType().name().equals("IMAGE")
+                                                ? prependServerUrl(request, b.getContent())
+                                                : b.getContent()
+                                ))
+                                .toList()
+                ))
+                .toList();
+    }
 
-            List<UserData> data = userDataRepository.findByUser(user);
-            return ResponseEntity.ok(data);
+    @GetMapping("/article-categories")
+    public List<ArticleCategoryDTO> getArticleCategories() {
+        return articleCategoryRepository.findAll().stream()
+                .map(c -> new ArticleCategoryDTO(
+                        c.getId(),
+                        c.getCode(),
+                        c.getName()
+                ))
+                .toList();
+    }
 
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Invalid token");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Server error: " + e.getMessage());
-        }
+
+    private String prependServerUrl(HttpServletRequest request, String relativePath) {
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        return baseUrl + relativePath;
     }
 }

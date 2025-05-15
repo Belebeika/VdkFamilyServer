@@ -15,5 +15,5 @@ public class UpdateUser {
     @Size(min = 2, max = 50, message = "Отчество должно быть от 2 до 50 символов")
     private String patronymic;
 
-    private Boolean isMarried;
+    private Boolean married;
 }

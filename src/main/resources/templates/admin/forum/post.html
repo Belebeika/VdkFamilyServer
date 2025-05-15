@@ -1,0 +1,35 @@
+<div th:fragment="render(post, grouped)">
+  <div th:if="${post != null}">
+    <div class="border p-3 my-2">
+      <a th:href="@{'/admin/users/' + ${post.user?.id} + '/edit'}">
+        <strong th:text="${post.user?.firstName + ' ' + post.user?.lastName}">[Пользователь удалён]</strong>
+      </a>
+      <p th:text="${post.content}"></p>
+
+      <small class="text-muted" th:text="${#temporals.format(post.createdAt, 'dd.MM.yyyy HH:mm')}"></small>
+
+      <div th:if="${post.attachments != null and post.attachments.size() > 0}">
+        <label><strong>Вложения:</strong></label>
+        <ul class="list-unstyled">
+          <li th:each="att : ${post.attachments}">
+            <a th:href="@{${att.url}}" target="_blank">
+              <span th:text="${att.type} + ': ' + ${#strings.substring(att.url, att.url.lastIndexOf('/') + 1)}"></span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Действия -->
+      <div class="d-flex gap-2 mt-2">
+        <a th:href="@{'/admin/forum/post/' + ${post.id} + '/edit'}" class="btn btn-sm btn-outline-primary">Редактировать</a>
+        <form th:action="@{'/admin/forum/post/' + ${post.id} + '/delete'}" method="post">
+          <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Удалить пост?')">Удалить</button>
+        </form>
+      </div>
+
+      <th:block th:each="child : ${grouped.get(post.id)}">
+        <div th:replace="~{admin/forum/post :: render(post=${child}, grouped=${grouped})}"></div>
+      </th:block>
+    </div>
+  </div>
+</div>

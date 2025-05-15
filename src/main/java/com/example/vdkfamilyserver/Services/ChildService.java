@@ -4,7 +4,7 @@ import com.example.vdkfamilyserver.Models.Child;
 import com.example.vdkfamilyserver.Models.User;
 import com.example.vdkfamilyserver.Repositories.ChildRepository;
 import com.example.vdkfamilyserver.Repositories.UserRepository;
-import com.example.vdkfamilyserver.exeptions.UserNotFoundException;
+import com.example.vdkfamilyserver.Exeptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

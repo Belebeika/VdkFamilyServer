@@ -2,10 +2,10 @@ package com.example.vdkfamilyserver.Services;
 
 import com.example.vdkfamilyserver.Models.TempUser;
 import com.example.vdkfamilyserver.Repositories.TempUserRepository;
-import com.example.vdkfamilyserver.exeptions.TempUserNotFoundException;
-import com.example.vdkfamilyserver.exeptions.VerificationAttemptsExhaustedException;
-import com.example.vdkfamilyserver.exeptions.VerificationCodeExpiredException;
-import com.example.vdkfamilyserver.exeptions.InvalidVerificationCodeException;
+import com.example.vdkfamilyserver.Exeptions.TempUserNotFoundException;
+import com.example.vdkfamilyserver.Exeptions.VerificationAttemptsExhaustedException;
+import com.example.vdkfamilyserver.Exeptions.VerificationCodeExpiredException;
+import com.example.vdkfamilyserver.Exeptions.InvalidVerificationCodeException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

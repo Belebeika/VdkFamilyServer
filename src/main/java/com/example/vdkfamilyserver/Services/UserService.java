@@ -31,8 +31,8 @@ public class UserService {
         if (newuserinfo.getLastName() != null) {
             user.setLastName(newuserinfo.getLastName());
         }
-        if (newuserinfo.getIsMarried() != null) {
-            user.setMarried(newuserinfo.getIsMarried());
+        if (newuserinfo.getMarried() != null) {
+            user.setMarried(newuserinfo.getMarried());
         }
         if (newuserinfo.getPatronymic() != null) {
             user.setPatronymic(newuserinfo.getPatronymic());

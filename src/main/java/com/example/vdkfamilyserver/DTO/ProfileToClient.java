@@ -17,6 +17,6 @@ public class ProfileToClient {
     @JsonProperty("patronymic")
     private String patronymic;
 
-    @JsonProperty("isMarried")
+    @JsonProperty("married")
     private boolean married;
 }

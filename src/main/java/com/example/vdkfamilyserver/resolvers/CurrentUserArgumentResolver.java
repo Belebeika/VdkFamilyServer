@@ -3,7 +3,7 @@ package com.example.vdkfamilyserver.resolvers;
 import com.example.vdkfamilyserver.Models.User;
 import com.example.vdkfamilyserver.Repositories.UserRepository;
 import com.example.vdkfamilyserver.Services.JwtService;
-import com.example.vdkfamilyserver.annotations.CurrentUser;
+import com.example.vdkfamilyserver.Annotations.CurrentUser;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;

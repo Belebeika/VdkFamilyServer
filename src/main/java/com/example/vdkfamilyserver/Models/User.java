@@ -60,7 +60,7 @@ public class User {
 
     // Информация о браке
     @Column(nullable = false)
-    private boolean isMarried = false;
+    private boolean married = false;
 
     // Дети пользователя
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
