@@ -1,5 +1,6 @@
 package com.example.vdkfamilyserver.Controllers;
 
+import com.example.vdkfamilyserver.DTO.Data.ChildDTO;
 import com.example.vdkfamilyserver.Models.Child;
 import com.example.vdkfamilyserver.Models.User;
 import com.example.vdkfamilyserver.Services.ChildService;
@@ -8,7 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Set;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/children")
@@ -17,16 +19,22 @@ public class ChildController {
     private final ChildService childService;
 
     @PostMapping
-    public ResponseEntity<Child> addChild(
+    public ResponseEntity<ChildDTO> addChild(
             @CurrentUser User user,
             @RequestBody Child child) {
-        return ResponseEntity.ok(childService.addChildToUser(user.getId(), child));
+        Child saved = childService.addChildToUser(user.getId(), child);
+        return ResponseEntity.ok(new ChildDTO(saved));
     }
 
     @GetMapping
-    public ResponseEntity<Set<Child>> getUserChildren(
+    public ResponseEntity<List<ChildDTO>> getUserChildren(
             @CurrentUser User user) {
-        return ResponseEntity.ok(childService.getUserChildren(user.getId()));
+        List<ChildDTO> children = childService.getUserChildren(user.getId())
+                .stream()
+                .map(ChildDTO::new)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(children);
     }
 
     @DeleteMapping("/{childId}")
@@ -38,10 +46,11 @@ public class ChildController {
     }
 
     @PutMapping("/{childId}")
-    public ResponseEntity<Child> updateChild(
+    public ResponseEntity<ChildDTO> updateChild(
             @CurrentUser User user,
             @PathVariable Long childId,
             @RequestBody Child child) {
-        return ResponseEntity.ok(childService.updateChild(user.getId(), childId, child));
+        Child updated = childService.updateChild(user.getId(), childId, child);
+        return ResponseEntity.ok(new ChildDTO(updated));
     }
 }

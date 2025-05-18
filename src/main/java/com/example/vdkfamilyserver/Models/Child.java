@@ -31,6 +31,6 @@ public class Child {
     private Gender gender;  // Пол
 
     public enum Gender {
-        MALE, FEMALE  // Варианты пола
+        MALE, FEMALE
     }
 }

@@ -16,10 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
-import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -35,7 +33,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/register/**").permitAll()
                         .requestMatchers("/api/user/**").permitAll()
+                        .requestMatchers("/api/children/**").permitAll()
                         .requestMatchers("/api/data/**").permitAll()
+                        .requestMatchers("/api/embed/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .anyRequest().authenticated()
                 )
@@ -51,9 +51,16 @@ public class SecurityConfig {
                         .ignoringRequestMatchers("/api/**")
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/css/**", "/js/**", "/uploads/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/login", "/css/**", "/js/**", "/uploads/**").permitAll()
+
+                        .requestMatchers("/admin/dashboard").authenticated()
+
+                        // только для админа
+                        .requestMatchers("/admin/users/**", "/admin/forum/**").hasRole("ADMIN")
+
+                        // и админ, и редактор
+                        .requestMatchers("/admin/**").hasAnyRole("ADMIN", "EDITOR")
+
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

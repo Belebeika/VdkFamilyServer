@@ -1,4 +1,4 @@
-package com.example.vdkfamilyserver.DTO.Data.Article;
+package com.example.vdkfamilyserver.DTO.Data.ArticleAndEvent;
 
 import java.util.List;
 

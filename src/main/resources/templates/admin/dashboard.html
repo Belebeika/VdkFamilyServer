@@ -16,8 +16,8 @@
     </div>
 
     <div class="row g-4">
-        <!-- Блок пользователей -->
-        <div class="col-md-4">
+        <!-- Блок пользователей (только для админа) -->
+        <div class="col-md-4" th:if="${not isEditor}">
             <div class="card text-white bg-success h-100">
                 <div class="card-body">
                     <h5 class="card-title">Пользователи</h5>
@@ -49,7 +49,18 @@
             </div>
         </div>
 
-        <!-- Блок новостей -->
+        <!-- Блок мероприятий -->
+        <div class="col-md-4">
+            <div class="card text-white bg-danger h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Мероприятия</h5>
+                    <p class="card-text">Загруженные мероприятия</p>
+                    <a href="/admin/events" class="btn btn-light mt-3">Мероприятия</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Блок статей -->
         <div class="col-md-4">
             <div class="card text-white bg-primary h-100">
                 <div class="card-body">
@@ -60,8 +71,8 @@
             </div>
         </div>
 
-        <!-- Блок форума -->
-        <div class="col-md-4">
+        <!-- Блок форума (только для админа) -->
+        <div class="col-md-4" th:if="${not isEditor}">
             <div class="card text-white bg-warning h-100">
                 <div class="card-body">
                     <h5 class="card-title">Форум</h5>

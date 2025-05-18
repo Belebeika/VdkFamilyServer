@@ -66,10 +66,6 @@ public class User {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Child> children = new HashSet<>();
 
-    // Дополнительные данные (если нужны)
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<UserData> userData = new HashSet<>();
-
     // Метод для добавления ребёнка
     public void addChild(LocalDate birthDate, Child.Gender gender) {
         Child child = Child.builder()
@@ -78,10 +74,5 @@ public class User {
                 .parent(this)
                 .build();
         children.add(child);
-    }
-
-    public void addUserData(UserData data) {
-        userData.add(data);
-        data.setUser(this);
     }
 }

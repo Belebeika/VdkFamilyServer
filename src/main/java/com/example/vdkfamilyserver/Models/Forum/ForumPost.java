@@ -26,12 +26,13 @@ public class ForumPost {
     @ManyToOne(optional = false)
     private ForumTopic topic;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "parent_id")
-    private ForumPost parent; // для вложенных комментариев
+    @JoinColumn(name = "parent_id", nullable = true)
+    private ForumPost parent;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;

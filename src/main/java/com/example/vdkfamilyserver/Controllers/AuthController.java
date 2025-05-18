@@ -27,6 +27,9 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         User user = authService.login(loginRequest.getPhoneNumber(), loginRequest.getPassword());
         if (user != null) {
+            if (!user.isActive()) {
+                return ResponseEntity.badRequest().body("Ваша учётная запись была заблокирована");
+            }
             UserDetailsImpl userDetails = new UserDetailsImpl(user);
             String token = jwtService.generateToken(
                     new UsernamePasswordAuthenticationToken(

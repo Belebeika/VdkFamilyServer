@@ -1,14 +1,16 @@
 package com.example.vdkfamilyserver.Controllers;
 
-import com.example.vdkfamilyserver.DTO.Data.Article.ArticleCategoryDTO;
-import com.example.vdkfamilyserver.DTO.Data.Article.ArticleDTO;
+import com.example.vdkfamilyserver.DTO.Data.ArticleAndEvent.ArticleCategoryDTO;
+import com.example.vdkfamilyserver.DTO.Data.ArticleAndEvent.ArticleDTO;
+import com.example.vdkfamilyserver.DTO.Data.ArticleAndEvent.EventDTO;
 import com.example.vdkfamilyserver.DTO.Data.BannerDTO;
-import com.example.vdkfamilyserver.DTO.Data.Article.BlockDTO;
+import com.example.vdkfamilyserver.DTO.Data.ArticleAndEvent.BlockDTO;
 import com.example.vdkfamilyserver.DTO.Data.NewsDTO;
 import com.example.vdkfamilyserver.Models.Article.ArticleCategory;
 import com.example.vdkfamilyserver.Repositories.Article.ArticleCategoryRepository;
 import com.example.vdkfamilyserver.Repositories.Article.ArticleRepository;
 import com.example.vdkfamilyserver.Repositories.BannerRepository;
+import com.example.vdkfamilyserver.Repositories.Event.EventRepository;
 import com.example.vdkfamilyserver.Repositories.NewsRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class DataController {
     private final NewsRepository newsRepository;
     private final ArticleRepository articleRepository;
     private final ArticleCategoryRepository articleCategoryRepository;
+    private final EventRepository eventRepository;
 
     @GetMapping("/banner")
     public List<BannerDTO> getAdviceImages(HttpServletRequest request) {
@@ -78,6 +81,25 @@ public class DataController {
                         c.getName()
                 ))
                 .toList();
+    }
+
+    @GetMapping("/events")
+    public List<EventDTO> getEvents(HttpServletRequest request) {
+        return eventRepository.findAll().stream()
+            .map(event -> new EventDTO(
+                event.getId(),
+                event.getTitle(),
+                event.getEventDate(),
+                event.getBlocks().stream()
+                    .map(b -> new BlockDTO(
+                        b.getType().name(),
+                        b.getType().name().equals("IMAGE")
+                            ? prependServerUrl(request, b.getContent())
+                            : b.getContent()
+                    ))
+                    .toList()
+            ))
+            .toList();
     }
 
 

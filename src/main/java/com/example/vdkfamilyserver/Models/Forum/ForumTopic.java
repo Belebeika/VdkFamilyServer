@@ -25,7 +25,8 @@ public class ForumTopic {
     @Column(nullable = false)
     private String title;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = true)
     private User user;
 
     @CreationTimestamp
